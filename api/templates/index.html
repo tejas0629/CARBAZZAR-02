@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Heading -->
+<h2 class="text-3xl font-bold mb-8 text-center text-gray-800">Explore Our Cars</h2>
+
+{% if brands %}
+  {% for brand, cars in brands.items %}
+    <!-- Brand Section -->
+    <h3 class="text-2xl font-semibold text-red-600 mt-8 mb-4 border-b border-gray-300 pb-2">
+      {{ brand }}
+    </h3>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for car in cars %}
+        <div class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-2xl transition transform hover:-translate-y-1 border border-gray-200">
+          
+          <!-- Vehicle Image -->
+{% if car.image %}
+  <img src="{{ car.image.url }}" alt="{{ car.name }}" class="w-full h-52 object-cover">
+{% else %}
+  <img src="{% static 'images/placeholder.png' %}" alt="No image" class="w-full h-52 object-cover">
+{% endif %}
+
+
+
+          <!-- Vehicle Info -->
+          <div class="p-5">
+            <h3 class="text-lg font-bold text-gray-800 mb-1">{{ car.brand }} {{ car.name }}</h3>
+            <p class="text-gray-600 text-sm mb-1">Fuel Type: <span class="font-medium">{{ car.fuel_type|default:"-" }}</span></p>
+            <p class="text-gray-900 font-semibold text-lg">₹{{ car.price|floatformat:0 }}</p>
+
+            <!-- Divider -->
+            <hr class="my-3 border-gray-200">
+
+            <!-- Short Key Specs Preview -->
+            <div class="text-sm text-gray-600 space-y-1">
+              <p><span class="font-medium">Transmission:</span> {{ car.transmission|default:"Automatic" }}</p>
+              <p><span class="font-medium">Engine:</span> {{ car.engine|default:"1200 cc" }}</p>
+              <p><span class="font-medium">Mileage:</span> {{ car.mileage|default:"18 km/l" }}</p>
+            </div>
+
+            <!-- Buttons -->
+            <div class="mt-5 flex justify-between items-center">
+              <span class="text-red-600 font-semibold">⭐ {{ car.safety_rating|default:"4.5" }}/5</span>
+              <a href="{% url 'vehicle' car.id %}" 
+                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition">
+                View Details →
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% else %}
+  <p class="text-center text-gray-600 text-lg">
+    No vehicles found. Admin can add vehicles from the dashboard.
+  </p>
+{% endif %}
+{% endblock %}

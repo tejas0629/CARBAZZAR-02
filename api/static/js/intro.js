@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded', function(){ setTimeout(function(){ const intro = document.getElementById('intro'); if(intro){ intro.style.transition = 'opacity 0.6s ease'; intro.style.opacity = '0'; setTimeout(()=> intro.remove(),700); } }, 2200); });

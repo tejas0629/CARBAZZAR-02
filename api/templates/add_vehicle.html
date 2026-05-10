@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Vehicle</title>
+  <style>
+    body { font-family: Poppins, sans-serif; background: #f5f6fa; margin: 0; padding: 0; }
+    .container { max-width: 700px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    h2 { text-align: center; color: #333; margin-bottom: 25px; }
+    label { display: block; margin-top: 15px; font-weight: 500; }
+    input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; }
+    textarea { resize: vertical; }
+    .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; margin-top: 10px; }
+    button { margin-top: 20px; background: #007bff; color: white; border: none; padding: 12px; border-radius: 6px; width: 100%; cursor: pointer; }
+    button:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Add Vehicle</h2>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <label>Car Name:</label>
+      <input type="text" name="name" placeholder="Enter car name" required>
+
+      <label>Brand:</label>
+      <input type="text" name="brand" placeholder="Enter brand" required>
+
+      <label>Price:</label>
+      <input type="text" name="price" placeholder="Base Model to Top model (in lakhs)" step="0.01" required>
+
+      <label>Fuel Type:</label>
+      <input type="text" name="fuel_type" placeholder="Petrol, Diesel, CNG, Electric" required>
+
+      <label>Description:</label>
+      <textarea name="description" placeholder="Write a short car description..."></textarea>
+
+      <label>Car Image:</label>
+      <input type="file" name="image">
+
+      <hr style="margin: 25px 0;">
+
+      <h3>Key Specifications</h3>
+      <label>Engine:</label>
+      <input type="text" name="engine" placeholder="e.g., 998 cc - 1197 cc">
+
+      <label>Power:</label>
+      <input type="text" name="power" placeholder="e.g., 55.92 - 88.5 bhp">
+
+      <label>Torque:</label>
+      <input type="text" name="torque" placeholder="e.g., 82.1 Nm - 113 Nm">
+
+      <label>Mileage:</label>
+      <input type="text" name="mileage" placeholder="e.g., 23.56 - 25.19 kmpl">
+
+      <label>Safety Rating:</label>
+      <input type="text" name="safety_rating" placeholder="e.g., 1 Star">
+
+      <label>Transmission:</label>
+      <input type="text" name="transmission" placeholder="Manual / Automatic">
+
+      <hr style="margin: 25px 0;">
+
+      <h3>Top Features</h3>
+      <div class="features-grid">
+        <label><input type="checkbox" name="central_locking"> Central Locking</label>
+        <label><input type="checkbox" name="air_conditioner"> Air Conditioner</label>
+        <label><input type="checkbox" name="power_windows"> Power Windows</label>
+        <label><input type="checkbox" name="keyless_entry"> Keyless Entry</label>
+        <label><input type="checkbox" name="bluetooth"> Bluetooth Connectivity</label>
+        <label><input type="checkbox" name="android_auto"> Android Auto / Apple CarPlay</label>
+        <label><input type="checkbox" name="steering_controls"> Steering Mounted Controls</label>
+      </div>
+
+      <button type="submit">Add Vehicle</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+  <h2 class="text-xl font-semibold mb-4">Find a Car</h2>
+
+  <form method="post" class="mb-4">
+    {% csrf_token %}
+
+    <label>Budget (₹)</label>
+    <input name="budget" class="w-full border p-2 rounded mb-2" placeholder="e.g. 1000000">
+
+    <label>Priority</label>
+    <select name="priority" class="w-full border p-2 rounded mb-2">
+      <option value="safety">Safety</option>
+      <option value="luxury">Luxury</option>
+      <option value="reliable">Reliable</option>
+      <option value="all">All of above</option>
+    </select>
+
+    <label>Vehicle Type</label>
+    <select name="type" class="w-full border p-2 rounded mb-4">
+      <option value="noidea">No idea</option>
+      <option value="suv">SUV</option>
+      <option value="sedan">Sedan</option>
+      <option value="hatchback">Hatchback</option>
+      <option value="compact suv">Compact SUV</option>
+    </select>
+
+    <button class="bg-red-600 text-white px-4 py-2 rounded">Find Cars</button>
+  </form>
+
+  {% if matched %}
+  <h3 class="mb-2">Matches</h3>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {% for m in matched %}
+      <div class="bg-gray-50 p-4 rounded">
+        <h4 class="font-bold">{{ m.name }} ({{ m.brand }})</h4>
+        <p>Price: ₹{{ m.price_min }} - ₹{{ m.price_max }}</p>
+        <p>Safety: {{ m.safety_rating }}</p>
+        <a class="text-red-600" href="{% url 'vehicle' m.id %}">View</a>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

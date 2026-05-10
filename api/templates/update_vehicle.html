@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
+  <h2 class="text-2xl font-bold mb-4 text-blue-600">Update Vehicle</h2>
+
+  <form method="POST" enctype="multipart/form-data" class="space-y-4">
+    {% csrf_token %}
+    <input type="text" name="name" value="{{ vehicle.name }}" class="w-full border p-2 rounded" required>
+    <input type="text" name="brand" value="{{ vehicle.brand }}" class="w-full border p-2 rounded" required>
+    <input type="number" name="price_min" value="{{ vehicle.price_min }}" class="w-full border p-2 rounded" required>
+    <input type="number" name="price_max" value="{{ vehicle.price_max }}" class="w-full border p-2 rounded" required>
+    <input type="text" name="engine_cc" value="{{ vehicle.engine_cc }}" class="w-full border p-2 rounded">
+    <input type="text" name="safety_rating" value="{{ vehicle.safety_rating }}" class="w-full border p-2 rounded">
+    <div>
+      <p class="text-sm mb-1">Current Image:</p>
+      <img src="/static/images/{{ vehicle.image_path }}" class="w-40 h-32 object-cover rounded border mb-2">
+      <input type="file" name="image" class="w-full border p-2 rounded">
+    </div>
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Update Vehicle</button>
+  </form>
+</div>
+{% endblock %}

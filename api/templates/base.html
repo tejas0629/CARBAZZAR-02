@@ -1,0 +1,83 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CarBazzar</title>
+
+<!-- Tailwind CSS -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+
+<!-- Intro animation -->
+<div id="intro" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+  <div class="text-center">
+    <svg xmlns="http://www.w3.org/2000/svg" width="140" height="60" viewBox="0 0 64 32">
+      <rect width="64" height="32" rx="4" fill="#c81d1d"/>
+      <circle cx="16" cy="24" r="4" fill="#111"/>
+      <circle cx="48" cy="24" r="4" fill="#111"/>
+    </svg>
+    <h1 class="text-2xl font-bold text-red-600 mt-4">Welcome to CarBazzar</h1>
+  </div>
+</div>
+
+<!-- Navbar -->
+<nav class="bg-red-600 text-white p-4 shadow-md">
+  <div class="container mx-auto flex justify-between items-center">
+    <a href="{% url 'index' %}" class="font-bold text-xl">CarBazzar</a>
+    <div>
+      <a href="{% url 'index' %}" class="mx-2 hover:underline">Home</a>
+      <a href="{% url 'findcar' %}" class="mx-2 hover:underline">Find Car</a>
+      <a href="{% url 'comparecar' %}" class="mx-2 hover:underline">Compare</a>
+      <a href="{% url 'sellcar' %}" class="mx-2 hover:underline">Sell Car</a>
+
+      {% if request.session.user_id %}
+        <span class="mx-2">Hi, {{ request.session.user_name }}</span>
+        <a href="{% url 'logout' %}" class="mx-2 hover:underline">Logout</a>
+      {% elif request.session.admin %}
+        <a href="{% url 'dashboard' %}" class="mx-2 hover:underline">Dashboard</a>
+        <a href="{% url 'logout' %}" class="mx-2 hover:underline">Logout</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="mx-2 hover:underline">Login</a>
+        <a href="{% url 'register' %}" class="mx-2 hover:underline">Register</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<!-- Flash Messages -->
+<div class="container mx-auto mt-4">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="p-3 mb-4 rounded text-white
+        {% if message.tags == 'success' %} bg-green-500
+        {% elif message.tags == 'error' %} bg-red-500
+        {% elif message.tags == 'warning' %} bg-yellow-500
+        {% else %} bg-blue-500
+        {% endif %}
+      ">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+</div>
+
+<!-- Page Content -->
+<main class="container mx-auto p-6">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="bg-red-600 text-white p-4 mt-8">
+  <div class="container mx-auto text-center">
+    © 2025 CarBazzar. All rights reserved.
+  </div>
+</footer>
+
+<script src="{% static 'js/intro.js' %}"></script>
+</body>
+</html>
