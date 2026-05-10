@@ -1,22 +1,148 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="max-w-3xl mx-auto bg-white p-6 rounded shadow">
-  <h2 class="text-2xl font-bold mb-4 text-blue-600">Update Vehicle</h2>
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg mt-8">
+  <h2 class="text-3xl font-bold mb-6 text-blue-600">Update Vehicle</h2>
 
-  <form method="POST" enctype="multipart/form-data" class="space-y-4">
+  <form method="POST" enctype="multipart/form-data" class="space-y-6">
     {% csrf_token %}
-    <input type="text" name="name" value="{{ vehicle.name }}" class="w-full border p-2 rounded" required>
-    <input type="text" name="brand" value="{{ vehicle.brand }}" class="w-full border p-2 rounded" required>
-    <input type="number" name="price_min" value="{{ vehicle.price_min }}" class="w-full border p-2 rounded" required>
-    <input type="number" name="price_max" value="{{ vehicle.price_max }}" class="w-full border p-2 rounded" required>
-    <input type="text" name="engine_cc" value="{{ vehicle.engine_cc }}" class="w-full border p-2 rounded">
-    <input type="text" name="safety_rating" value="{{ vehicle.safety_rating }}" class="w-full border p-2 rounded">
-    <div>
-      <p class="text-sm mb-1">Current Image:</p>
-      <img src="/static/images/{{ vehicle.image_path }}" class="w-40 h-32 object-cover rounded border mb-2">
-      <input type="file" name="image" class="w-full border p-2 rounded">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="block font-semibold text-gray-700 mb-2">Car Name:</label>
+        <input type="text" name="name" value="{{ vehicle.name }}" class="w-full border border-gray-300 p-3 rounded" required>
+      </div>
+      <div>
+        <label class="block font-semibold text-gray-700 mb-2">Brand:</label>
+        <input type="text" name="brand" value="{{ vehicle.brand }}" class="w-full border border-gray-300 p-3 rounded" required>
+      </div>
     </div>
-    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Update Vehicle</button>
+
+    <div>
+      <label class="block font-semibold text-gray-700 mb-2">Description:</label>
+      <textarea name="description" class="w-full border border-gray-300 p-3 rounded h-24">{{ vehicle.description }}</textarea>
+    </div>
+
+    <div class="border-t pt-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Price Variants</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Base Price (₹):</label>
+          <input type="number" name="base_price" value="{{ vehicle.base_price }}" step="0.01" class="w-full border border-gray-300 p-3 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Mid Price (₹):</label>
+          <input type="number" name="mid_price" value="{{ vehicle.mid_price }}" step="0.01" class="w-full border border-gray-300 p-3 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Top Price (₹):</label>
+          <input type="number" name="top_price" value="{{ vehicle.top_price }}" step="0.01" class="w-full border border-gray-300 p-3 rounded">
+        </div>
+      </div>
+      <div class="mt-4">
+        <label class="block font-semibold text-gray-700 mb-2">Default Price (Backup):</label>
+        <input type="text" name="price" value="{{ vehicle.price }}" class="w-full border border-gray-300 p-3 rounded">
+      </div>
+    </div>
+
+    <div class="border-t pt-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Images</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Image 1 -->
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Image 1 (Front View):</label>
+          {% if vehicle.image1 %}
+            <img src="{{ vehicle.image1.url }}" class="w-full h-32 object-cover rounded border mb-2">
+          {% endif %}
+          <input type="file" name="image1" accept="image/*" class="w-full border border-gray-300 p-2 rounded">
+        </div>
+
+        <!-- Image 2 -->
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Image 2 (Side View):</label>
+          {% if vehicle.image2 %}
+            <img src="{{ vehicle.image2.url }}" class="w-full h-32 object-cover rounded border mb-2">
+          {% endif %}
+          <input type="file" name="image2" accept="image/*" class="w-full border border-gray-300 p-2 rounded">
+        </div>
+
+        <!-- Image 3 -->
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Image 3 (Interior):</label>
+          {% if vehicle.image3 %}
+            <img src="{{ vehicle.image3.url }}" class="w-full h-32 object-cover rounded border mb-2">
+          {% endif %}
+          <input type="file" name="image3" accept="image/*" class="w-full border border-gray-300 p-2 rounded">
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t pt-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Key Specifications</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Engine:</label>
+          <input type="text" name="engine" value="{{ vehicle.engine }}" class="w-full border border-gray-300 p-3 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Power:</label>
+          <input type="text" name="power" value="{{ vehicle.power }}" class="w-full border border-gray-300 p-3 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Mileage:</label>
+          <input type="text" name="mileage" value="{{ vehicle.mileage }}" class="w-full border border-gray-300 p-3 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Transmission:</label>
+          <select name="transmission" class="w-full border border-gray-300 p-3 rounded">
+            <option value="">Select Transmission</option>
+            <option value="Manual" {% if vehicle.transmission == 'Manual' %}selected{% endif %}>Manual</option>
+            <option value="Automatic" {% if vehicle.transmission == 'Automatic' %}selected{% endif %}>Automatic</option>
+            <option value="CVT" {% if vehicle.transmission == 'CVT' %}selected{% endif %}>CVT</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Fuel Type:</label>
+          <select name="fuel_type" class="w-full border border-gray-300 p-3 rounded">
+            <option value="">Select Fuel Type</option>
+            <option value="Petrol" {% if vehicle.fuel_type == 'Petrol' %}selected{% endif %}>Petrol</option>
+            <option value="Diesel" {% if vehicle.fuel_type == 'Diesel' %}selected{% endif %}>Diesel</option>
+            <option value="CNG" {% if vehicle.fuel_type == 'CNG' %}selected{% endif %}>CNG</option>
+            <option value="Hybrid" {% if vehicle.fuel_type == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+            <option value="Electric" {% if vehicle.fuel_type == 'Electric' %}selected{% endif %}>Electric</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Safety Rating:</label>
+          <input type="text" name="safety_rating" value="{{ vehicle.safety_rating }}" class="w-full border border-gray-300 p-3 rounded">
+        </div>
+        <div>
+          <label class="block font-semibold text-gray-700 mb-2">Seating Capacity:</label>
+          <input type="number" name="seating_capacity" value="{{ vehicle.seating_capacity }}" class="w-full border border-gray-300 p-3 rounded" min="2" max="9">
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t pt-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Top Features</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <label class="flex items-center"><input type="checkbox" name="central_locking" {% if vehicle.central_locking %}checked{% endif %} class="mr-2"> Central Locking</label>
+        <label class="flex items-center"><input type="checkbox" name="air_conditioner" {% if vehicle.air_conditioner %}checked{% endif %} class="mr-2"> Air Conditioner</label>
+        <label class="flex items-center"><input type="checkbox" name="power_windows" {% if vehicle.power_windows %}checked{% endif %} class="mr-2"> Power Windows</label>
+        <label class="flex items-center"><input type="checkbox" name="keyless_entry" {% if vehicle.keyless_entry %}checked{% endif %} class="mr-2"> Keyless Entry</label>
+        <label class="flex items-center"><input type="checkbox" name="bluetooth" {% if vehicle.bluetooth %}checked{% endif %} class="mr-2"> Bluetooth Connectivity</label>
+        <label class="flex items-center"><input type="checkbox" name="android_auto" {% if vehicle.android_auto %}checked{% endif %} class="mr-2"> Android Auto / Apple CarPlay</label>
+        <label class="flex items-center"><input type="checkbox" name="steering_controls" {% if vehicle.steering_controls %}checked{% endif %} class="mr-2"> Steering Mounted Controls</label>
+      </div>
+    </div>
+
+    <div class="flex gap-4 mt-8">
+      <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded transition">
+        ✓ Update Vehicle
+      </button>
+      <a href="{% url 'dashboard' %}" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded transition text-center">
+        ← Cancel
+      </a>
+    </div>
   </form>
 </div>
 {% endblock %}

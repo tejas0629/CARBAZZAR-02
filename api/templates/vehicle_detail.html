@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto p-8 bg-white shadow-lg rounded-2xl mt-8">
+
+  <!-- Vehicle Header -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    
+    <!-- Image Gallery -->
+    <div>
+      {% if vehicle.image1 %}
+        <img id="mainImage" src="{{ vehicle.image1.url }}" alt="{{ vehicle.name }}" class="rounded-xl w-full h-80 object-cover mb-3">
+      {% elif vehicle.image %}
+        <img id="mainImage" src="{{ vehicle.image.url }}" alt="{{ vehicle.name }}" class="rounded-xl w-full h-80 object-cover mb-3">
+      {% else %}
+        <img id="mainImage" src="{% static 'images/default_car.jpg' %}" alt="No image available" class="rounded-xl w-full h-80 object-cover mb-3">
+      {% endif %}
+      
+      <!-- Thumbnail Gallery -->
+      <div class="flex gap-2">
+        {% if vehicle.image1 %}<img src="{{ vehicle.image1.url }}" alt="Thumbnail 1" class="w-20 h-20 object-cover rounded cursor-pointer" onclick="changeImage(this)">{% endif %}
+        {% if vehicle.image2 %}<img src="{{ vehicle.image2.url }}" alt="Thumbnail 2" class="w-20 h-20 object-cover rounded cursor-pointer" onclick="changeImage(this)">{% endif %}
+        {% if vehicle.image3 %}<img src="{{ vehicle.image3.url }}" alt="Thumbnail 3" class="w-20 h-20 object-cover rounded cursor-pointer" onclick="changeImage(this)">{% endif %}
+      </div>
+    </div>
+
+    <!-- Vehicle Info -->
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">{{ vehicle.brand }} {{ vehicle.name }}</h1>
+      <p class="text-gray-600 mt-2 text-sm">{{ vehicle.description|default:"No description available." }}</p>
+
+      <!-- Price Variants -->
+      <div class="mt-6 bg-gray-50 p-4 rounded-lg">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">Price Variants:</h3>
+        {% if vehicle.base_price %}
+          <p class="text-sm text-gray-700">🔹 <strong>Base Model:</strong> ₹{{ vehicle.base_price|floatformat:2 }} Lakhs</p>
+        {% endif %}
+        {% if vehicle.mid_price %}
+          <p class="text-sm text-gray-700">🔹 <strong>Mid Model:</strong> ₹{{ vehicle.mid_price|floatformat:2 }} Lakhs</p>
+        {% endif %}
+        {% if vehicle.top_price %}
+          <p class="text-sm text-gray-700">🔹 <strong>Top Model:</strong> ₹{{ vehicle.top_price|floatformat:2 }} Lakhs</p>
+        {% endif %}
+        {% if vehicle.price and not vehicle.base_price %}
+          <p class="text-lg font-semibold text-red-600">{{ vehicle.price }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Quick Specs -->
+      <div class="mt-6 space-y-2 text-gray-700">
+        {% if vehicle.fuel_type %}<p>⛽ <strong>Fuel:</strong> {{ vehicle.fuel_type }}</p>{% endif %}
+        {% if vehicle.engine %}<p>⚙️ <strong>Engine:</strong> {{ vehicle.engine }}</p>{% endif %}
+        {% if vehicle.power %}<p>💪 <strong>Power:</strong> {{ vehicle.power }}</p>{% endif %}
+        {% if vehicle.mileage %}<p>🛣️ <strong>Mileage:</strong> {{ vehicle.mileage }}</p>{% endif %}
+        {% if vehicle.transmission %}<p>🔁 <strong>Transmission:</strong> {{ vehicle.transmission }}</p>{% endif %}
+        {% if vehicle.seating_capacity %}<p>🪑 <strong>Seating:</strong> {{ vehicle.seating_capacity }} Seats</p>{% endif %}
+        {% if vehicle.safety_rating %}<p>⭐ <strong>Safety Rating:</strong> {{ vehicle.safety_rating }}</p>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Features -->
+  {% if vehicle.central_locking or vehicle.air_conditioner or vehicle.power_windows or vehicle.keyless_entry or vehicle.bluetooth or vehicle.android_auto or vehicle.steering_controls %}
+    <div class="mt-10 bg-blue-50 p-6 rounded-lg">
+      <h2 class="text-2xl font-bold mb-4 text-gray-900">Top Features</h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-gray-800">
+        {% if vehicle.central_locking %}<p>🔒 Central Locking</p>{% endif %}
+        {% if vehicle.air_conditioner %}<p>❄️ Air Conditioner</p>{% endif %}
+        {% if vehicle.power_windows %}<p>🪟 Power Windows</p>{% endif %}
+        {% if vehicle.keyless_entry %}<p>🔑 Keyless Entry</p>{% endif %}
+        {% if vehicle.bluetooth %}<p>📱 Bluetooth Connectivity</p>{% endif %}
+        {% if vehicle.android_auto %}<p>🤖 Android Auto / Apple CarPlay</p>{% endif %}
+        {% if vehicle.steering_controls %}<p>🎮 Steering Mounted Controls</p>{% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- EMI Calculator -->
+  <div class="mt-10 bg-gradient-to-r from-orange-50 to-red-50 p-8 rounded-lg border-2 border-orange-200">
+    <h2 class="text-2xl font-bold mb-6 text-gray-900">💳 EMI Calculator</h2>
+    
+    <form method="POST" id="emiForm" class="space-y-4">
+      {% csrf_token %}
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Variant Selection -->
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Select Model Variant:</label>
+          <select name="variant" required class="w-full p-3 border border-gray-300 rounded-lg">
+            {% if vehicle.base_price %}<option value="base">Base - ₹{{ vehicle.base_price|floatformat:2 }} Lakhs</option>{% endif %}
+            {% if vehicle.mid_price %}<option value="mid">Mid - ₹{{ vehicle.mid_price|floatformat:2 }} Lakhs</option>{% endif %}
+            {% if vehicle.top_price %}<option value="top">Top - ₹{{ vehicle.top_price|floatformat:2 }} Lakhs</option>{% endif %}
+          </select>
+        </div>
+
+        <!-- Down Payment -->
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Down Payment (₹):</label>
+          <input type="number" name="down_payment" placeholder="e.g., 100000" step="10000" class="w-full p-3 border border-gray-300 rounded-lg">
+          <p class="text-xs text-gray-500 mt-1">Leave empty for 0 down payment</p>
+        </div>
+
+        <!-- Interest Rate -->
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Interest Rate (% per annum):</label>
+          <input type="number" name="interest_rate" value="9" placeholder="Default: 9%" step="0.1" class="w-full p-3 border border-gray-300 rounded-lg" required>
+        </div>
+
+        <!-- Loan Tenure -->
+        <div>
+          <label class="block text-gray-700 font-semibold mb-2">Loan Tenure (Months):</label>
+          <select name="tenure" required class="w-full p-3 border border-gray-300 rounded-lg">
+            <option value="">Select Tenure</option>
+            <option value="24">2 Years (24 months)</option>
+            <option value="36">3 Years (36 months)</option>
+            <option value="48">4 Years (48 months)</option>
+            <option value="60" selected>5 Years (60 months)</option>
+            <option value="72">6 Years (72 months)</option>
+            <option value="84">7 Years (84 months)</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white font-bold py-3 px-6 rounded-lg transition mt-6">
+        Calculate EMI →
+      </button>
+    </form>
+
+    <!-- EMI Results -->
+    {% if emi_monthly %}
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 bg-white p-6 rounded-lg border-2 border-green-300">
+        <div class="text-center">
+          <p class="text-gray-600 text-sm font-semibold">Monthly EMI</p>
+          <p class="text-3xl font-bold text-green-600">₹{{ emi_monthly|floatformat:0 }}</p>
+        </div>
+        <div class="text-center border-l border-r border-gray-300">
+          <p class="text-gray-600 text-sm font-semibold">Total Amount Payable</p>
+          <p class="text-3xl font-bold text-blue-600">₹{{ emi_total|floatformat:0 }}</p>
+        </div>
+        <div class="text-center">
+          <p class="text-gray-600 text-sm font-semibold">Total Interest</p>
+          <p class="text-3xl font-bold text-orange-600">₹{{ emi_interest|floatformat:0 }}</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Back Button -->
+  <div class="mt-8 text-center">
+    <a href="{% url 'index' %}" class="inline-block bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition">
+      ← Back to Cars
+    </a>
+  </div>
+
+</div>
+
+<script>
+  function changeImage(thumbnail) {
+    document.getElementById('mainImage').src = thumbnail.src;
+  }
+</script>
+
+{% endblock %}

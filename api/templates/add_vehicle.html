@@ -6,62 +6,115 @@
   <title>Add Vehicle</title>
   <style>
     body { font-family: Poppins, sans-serif; background: #f5f6fa; margin: 0; padding: 0; }
-    .container { max-width: 700px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .container { max-width: 800px; margin: 40px auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     h2 { text-align: center; color: #333; margin-bottom: 25px; }
+    h3 { color: #555; margin-top: 20px; margin-bottom: 15px; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
     label { display: block; margin-top: 15px; font-weight: 500; }
-    input, textarea { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; }
+    input, textarea, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
     textarea { resize: vertical; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; margin-top: 10px; }
-    button { margin-top: 20px; background: #007bff; color: white; border: none; padding: 12px; border-radius: 6px; width: 100%; cursor: pointer; }
+    .file-input-group { margin-top: 15px; }
+    .file-label { display: inline-block; background: #007bff; color: white; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+    button { margin-top: 20px; background: #007bff; color: white; border: none; padding: 12px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: 600; }
     button:hover { background: #0056b3; }
+    .back-link { display: inline-block; margin-bottom: 20px; color: #007bff; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
   <div class="container">
+    <a href="{% url 'dashboard' %}" class="back-link">← Back to Dashboard</a>
     <h2>Add Vehicle</h2>
+    
     <form method="POST" enctype="multipart/form-data">
       {% csrf_token %}
 
-      <label>Car Name:</label>
+      <h3>Basic Information</h3>
+      <label>Car Name: *</label>
       <input type="text" name="name" placeholder="Enter car name" required>
 
-      <label>Brand:</label>
-      <input type="text" name="brand" placeholder="Enter brand" required>
-
-      <label>Price:</label>
-      <input type="text" name="price" placeholder="Base Model to Top model (in lakhs)" step="0.01" required>
-
-      <label>Fuel Type:</label>
-      <input type="text" name="fuel_type" placeholder="Petrol, Diesel, CNG, Electric" required>
+      <label>Brand: *</label>
+      <input type="text" name="brand" placeholder="Enter brand (e.g., Maruti, Hyundai)" required>
 
       <label>Description:</label>
-      <textarea name="description" placeholder="Write a short car description..."></textarea>
+      <textarea name="description" placeholder="Write a short car description..." rows="4"></textarea>
 
-      <label>Car Image:</label>
-      <input type="file" name="image">
+      <h3>Pricing - Price Variants</h3>
+      <div class="grid-2">
+        <div>
+          <label>Base Model Price (₹):</label>
+          <input type="number" name="base_price" placeholder="e.g., 5.5" step="0.01">
+        </div>
+        <div>
+          <label>Mid Model Price (₹):</label>
+          <input type="number" name="mid_price" placeholder="e.g., 6.5" step="0.01">
+        </div>
+      </div>
+      <label>Top Model Price (₹):</label>
+      <input type="number" name="top_price" placeholder="e.g., 7.5" step="0.01">
 
-      <hr style="margin: 25px 0;">
+      <label>Default Price (Backup): *</label>
+      <input type="text" name="price" placeholder="e.g., 5.5 - 7.5 Lakhs" required>
+
+      <h3>Images (Minimum 3)</h3>
+      <label>Image 1 (Front View):</label>
+      <input type="file" name="image1" accept="image/*">
+
+      <label>Image 2 (Side View):</label>
+      <input type="file" name="image2" accept="image/*">
+
+      <label>Image 3 (Interior/Details):</label>
+      <input type="file" name="image3" accept="image/*">
 
       <h3>Key Specifications</h3>
-      <label>Engine:</label>
-      <input type="text" name="engine" placeholder="e.g., 998 cc - 1197 cc">
+      <div class="grid-2">
+        <div>
+          <label>Engine:</label>
+          <input type="text" name="engine" placeholder="e.g., 998 cc - 1197 cc">
+        </div>
+        <div>
+          <label>Power:</label>
+          <input type="text" name="power" placeholder="e.g., 55.92 - 88.5 bhp">
+        </div>
+      </div>
 
-      <label>Power:</label>
-      <input type="text" name="power" placeholder="e.g., 55.92 - 88.5 bhp">
+      <div class="grid-2">
+        <div>
+          <label>Mileage:</label>
+          <input type="text" name="mileage" placeholder="e.g., 23.56 - 25.19 kmpl">
+        </div>
+        <div>
+          <label>Transmission:</label>
+          <select name="transmission">
+            <option value="">Select Transmission</option>
+            <option value="Manual">Manual</option>
+            <option value="Automatic">Automatic</option>
+            <option value="CVT">CVT</option>
+          </select>
+        </div>
+      </div>
 
-      <label>Torque:</label>
-      <input type="text" name="torque" placeholder="e.g., 82.1 Nm - 113 Nm">
+      <div class="grid-2">
+        <div>
+          <label>Fuel Type:</label>
+          <select name="fuel_type">
+            <option value="">Select Fuel Type</option>
+            <option value="Petrol">Petrol</option>
+            <option value="Diesel">Diesel</option>
+            <option value="CNG">CNG</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Electric">Electric</option>
+          </select>
+        </div>
+        <div>
+          <label>Safety Rating:</label>
+          <input type="text" name="safety_rating" placeholder="e.g., 4.5 / 5">
+        </div>
+      </div>
 
-      <label>Mileage:</label>
-      <input type="text" name="mileage" placeholder="e.g., 23.56 - 25.19 kmpl">
-
-      <label>Safety Rating:</label>
-      <input type="text" name="safety_rating" placeholder="e.g., 1 Star">
-
-      <label>Transmission:</label>
-      <input type="text" name="transmission" placeholder="Manual / Automatic">
-
-      <hr style="margin: 25px 0;">
+      <label>Seating Capacity:</label>
+      <input type="number" name="seating_capacity" placeholder="e.g., 5" min="2" max="9">
 
       <h3>Top Features</h3>
       <div class="features-grid">
@@ -74,7 +127,7 @@
         <label><input type="checkbox" name="steering_controls"> Steering Mounted Controls</label>
       </div>
 
-      <button type="submit">Add Vehicle</button>
+      <button type="submit">✓ Add Vehicle</button>
     </form>
   </div>
 </body>
